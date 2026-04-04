@@ -1,0 +1,25 @@
+{
+  "name": "sigat",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/vicenzineo/SIGAT#readme",
+  "bugs": {
+    "url": "https://github.com/vicenzineo/SIGAT/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicenzineo/SIGAT.git"
+  },
+  "license": "ISC",
+  "author": "Vicenzo Cenni",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "install": "^0.13.0",
+    "npm": "^11.12.1",
+    "typescript": "^6.0.2"
+  }
+}
