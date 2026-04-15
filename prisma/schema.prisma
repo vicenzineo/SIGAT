@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Cliente {
+  idCliente Int @id @default(autoincrement())
+  nome String
+  telefone String
+  email String
+
+  equipamentos Equipamento[]
+}
+
+model Equipamento {
+  idEquipamento Int @id @default(autoincrement())
+  tipo String
+  marca String
+  modelo String
+  numeroSerie String
+  defeitoRelatado String
+
+  clienteId Int
+  cliente Cliente @relation(fields: [clienteId], references: [idCliente])
+
+  ordensServico OrdemServico[]
+}
+
+model OrdemServico {
+  idOS Int @id @default(autoincrement())
+  dataAbertura DateTime
+  status String
+  valorServico Float
+
+  equipamentoId Int
+  equipamento Equipamento @relation(fields: [equipamentoId], references: [idEquipamento])
+
+  pagamento Pagamento?
+
+  notificacoes Notificacao[]
+
+  tecnicoId Int
+  tecnico Tecnico @relation(fields: [tecnicoId], references: [idTecnico])
+
+  servicos Servico[]
+
+  diagnostico Diagnostico[]
+
+  itemPecaOS ItemPecoOS[]
+}
+
+model Pagamento {
+  idPagamento Int @id @default(autoincrement())
+  valor Float
+  dataPagamento DateTime
+  metodo String
+  status String
+
+  ordemServicoId Int @unique
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+}
+
+model Notificacao {
+  idNotificacao Int @id @default(autoincrement())
+  mensagem String
+  dataEnvio DateTime
+  tipo String
+
+  ordemServicoId Int
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+}
+
+model Tecnico {
+  idTecnico Int @id @default(autoincrement())
+  nome String
+  especialidade String
+  telefone String
+
+  ordensServico OrdemServico[]
+}
+
+model Servico {
+  idServico Int @id @default(autoincrement())
+  descricao String
+  valorBase Int
+
+  ordemServicoId Int
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+}
+
+model Diagnostico {
+  idDiagnostico Int @id @default(autoincrement())
+  descricao String
+  dataRegistro DateTime
+
+  ordemServicoId Int
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+}
+
+model ItemPecoOS {
+  idItemPecaOS Int @id @default(autoincrement())
+  quantidade Int
+
+  ordemServicoId Int
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+
+  pecaId Int
+  peca Peca @relation(fields: [pecaId], references: [idPeca])
+}
+
+model Peca {
+  idPeca Int @id @default(autoincrement())
+  nome String
+  quantidadeEstoque Int
+  precoUnitario Int
+  
+  itemPecaOS ItemPecoOS[]
+}
