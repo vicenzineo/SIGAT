@@ -30,6 +30,7 @@ export const getPecaSchema = {
   schema: {
     tags: ["Pecas"],
     summary: "Lista todas as pecas",
+    security: [{ bearerAuth: [] }],
     response: { 200: { type: "array", items: pecaSchema } },
   },
 };
@@ -38,6 +39,7 @@ export const getPecaByIdSchema = {
   schema: {
     tags: ["Pecas"],
     summary: "Obtem uma peca pelo ID",
+    security: [{ bearerAuth: [] }],
     params: pecaIdParamsSchema,
     response: { 200: pecaSchema },
   },
@@ -47,6 +49,7 @@ export const postPecaSchema = {
   schema: {
     tags: ["Pecas"],
     summary: "Cria uma nova peca",
+    security: [{ bearerAuth: [] }],
     body: pecaBodySchema,
     response: { 201: pecaSchema },
   },
@@ -56,6 +59,7 @@ export const putPecaByIdSchema = {
   schema: {
     tags: ["Pecas"],
     summary: "Atualiza uma peca pelo ID",
+    security: [{ bearerAuth: [] }],
     params: pecaIdParamsSchema,
     body: pecaBodySchema,
     response: { 200: pecaSchema },
@@ -66,6 +70,7 @@ export const deletePecaByIdSchema = {
   schema: {
     tags: ["Pecas"],
     summary: "Exclui uma peca pelo ID",
+    security: [{ bearerAuth: [] }],
     params: pecaIdParamsSchema,
     response: { 200: pecaSchema },
   },

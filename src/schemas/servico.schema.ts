@@ -30,6 +30,7 @@ export const getServicoSchema = {
   schema: {
     tags: ["Servicos"],
     summary: "Lista todos os servicos",
+    security: [{ bearerAuth: [] }],
     response: { 200: { type: "array", items: servicoSchema } },
   },
 };
@@ -38,6 +39,7 @@ export const getServicoByIdSchema = {
   schema: {
     tags: ["Servicos"],
     summary: "Obtem um servico pelo ID",
+    security: [{ bearerAuth: [] }],
     params: servicoIdParamsSchema,
     response: { 200: servicoSchema },
   },
@@ -47,6 +49,7 @@ export const postServicoSchema = {
   schema: {
     tags: ["Servicos"],
     summary: "Cria um novo servico",
+    security: [{ bearerAuth: [] }],
     body: servicoBodySchema,
     response: { 201: servicoSchema },
   },
@@ -56,6 +59,7 @@ export const putServicoByIdSchema = {
   schema: {
     tags: ["Servicos"],
     summary: "Atualiza um servico pelo ID",
+    security: [{ bearerAuth: [] }],
     params: servicoIdParamsSchema,
     body: servicoBodySchema,
     response: { 200: servicoSchema },
@@ -66,6 +70,7 @@ export const deleteServicoByIdSchema = {
   schema: {
     tags: ["Servicos"],
     summary: "Exclui um servico pelo ID",
+    security: [{ bearerAuth: [] }],
     params: servicoIdParamsSchema,
     response: { 200: servicoSchema },
   },

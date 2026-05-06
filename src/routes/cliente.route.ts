@@ -8,12 +8,15 @@ import {
   putClienteByIdSchema,
 } from "../schemas/cliente.schema.js";
 
-async function clientesRoutes(fastify: FastifyInstance) {
+async function clientesPublicRoutes(fastify: FastifyInstance) {
+  fastify.post("/", postClienteSchema, clienteController.post);
+}
+
+async function clientesProtectedRoutes(fastify: FastifyInstance) {
   fastify.get("/", getClienteSchema, clienteController.get);
   fastify.get("/:id", getClienteByIdSchema, clienteController.getParamId);
-  fastify.post("/", postClienteSchema, clienteController.post);
   fastify.put("/:id", putClienteByIdSchema, clienteController.putParamId);
   fastify.delete("/:id", deleteClienteByIdSchema, clienteController.deleteParamId);
 }
 
-export default clientesRoutes;
+export { clientesPublicRoutes, clientesProtectedRoutes };

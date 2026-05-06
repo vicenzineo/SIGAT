@@ -17,6 +17,7 @@ model Cliente {
   nome String
   telefone String
   email String
+  senha String @default("")
 
   equipamentos Equipamento[]
 }
@@ -84,6 +85,7 @@ model Tecnico {
   nome String
   especialidade String
   telefone String
+  senha String @default("")
 
   ordensServico OrdemServico[]
 }

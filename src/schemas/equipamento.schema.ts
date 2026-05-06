@@ -43,6 +43,7 @@ export const getEquipamentoSchema = {
   schema: {
     tags: ["Equipamentos"],
     summary: "Lista todos os equipamentos",
+    security: [{ bearerAuth: [] }],
     response: { 200: { type: "array", items: equipamentoSchema } },
   },
 };
@@ -51,6 +52,7 @@ export const getEquipamentoByIdSchema = {
   schema: {
     tags: ["Equipamentos"],
     summary: "Obtem um equipamento pelo ID",
+    security: [{ bearerAuth: [] }],
     params: equipamentoIdParamsSchema,
     response: { 200: equipamentoSchema },
   },
@@ -60,6 +62,7 @@ export const postEquipamentoSchema = {
   schema: {
     tags: ["Equipamentos"],
     summary: "Cria um novo equipamento",
+    security: [{ bearerAuth: [] }],
     body: equipamentoBodySchema,
     response: { 201: equipamentoSchema },
   },
@@ -69,6 +72,7 @@ export const putEquipamentoByIdSchema = {
   schema: {
     tags: ["Equipamentos"],
     summary: "Atualiza um equipamento pelo ID",
+    security: [{ bearerAuth: [] }],
     params: equipamentoIdParamsSchema,
     body: equipamentoBodySchema,
     response: { 200: equipamentoSchema },
@@ -79,6 +83,7 @@ export const deleteEquipamentoByIdSchema = {
   schema: {
     tags: ["Equipamentos"],
     summary: "Exclui um equipamento pelo ID",
+    security: [{ bearerAuth: [] }],
     params: equipamentoIdParamsSchema,
     response: { 200: equipamentoSchema },
   },
