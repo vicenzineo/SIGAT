@@ -1,8 +1,8 @@
 import { prisma } from "../../lib/prisma.js";
 
 export class AuthRepository {
-  public async findTecnicoByNome(nome: string) {
-    return prisma.tecnico.findFirst({ where: { nome } });
+  public async findTecnicoByEmail(email: string) {
+    return prisma.tecnico.findFirst({ where: { email } });
   }
 
   public async findClienteByEmail(email: string) {

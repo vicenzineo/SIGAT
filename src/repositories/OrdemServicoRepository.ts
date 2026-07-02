@@ -6,6 +6,16 @@ export class OrdemServicoRepository {
     return prisma.ordemServico.findMany();
   }
 
+  public async findByClienteId(clienteId: number): Promise<OrdemServico[]> {
+    return prisma.ordemServico.findMany({
+      where: {
+        equipamento: {
+          clienteId,
+        },
+      },
+    });
+  }
+
   public async findById(id: number): Promise<OrdemServico | null> {
     return prisma.ordemServico.findUnique({ where: { idOS: id } });
   }

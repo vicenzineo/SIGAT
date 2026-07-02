@@ -8,6 +8,31 @@ export const clienteSchema = {
   },
 } as const;
 
+const equipamentoSchema = {
+  type: "object",
+  properties: {
+    idEquipamento: { type: "integer" },
+    tipo: { type: "string" },
+    marca: { type: "string" },
+    modelo: { type: "string" },
+    numeroSerie: { type: "string" },
+    defeitoRelatado: { type: "string" },
+    clienteId: { type: "integer" },
+  },
+} as const;
+
+const ordemServicoSchema = {
+  type: "object",
+  properties: {
+    idOS: { type: "integer" },
+    dataAbertura: { type: "string" },
+    status: { type: "string" },
+    valorServico: { type: "number" },
+    equipamentoId: { type: "integer" },
+    tecnicoId: { type: "integer" },
+  },
+} as const;
+
 export const clienteBodySchema = {
   type: "object",
   required: ["nome", "telefone", "email", "senha"],
@@ -74,5 +99,51 @@ export const deleteClienteByIdSchema = {
     security: [{ bearerAuth: [] }],
     params: clienteIdParamsSchema,
     response: { 200: clienteSchema },
+  },
+};
+
+export const getClienteMeSchema = {
+  schema: {
+    tags: ["Clientes"],
+    summary: "Obtem os dados do cliente autenticado",
+    security: [{ bearerAuth: [] }],
+    response: { 200: clienteSchema },
+  },
+};
+
+export const putClienteMeSchema = {
+  schema: {
+    tags: ["Clientes"],
+    summary: "Atualiza os dados do cliente autenticado",
+    security: [{ bearerAuth: [] }],
+    body: {
+      type: "object",
+      required: ["nome", "telefone", "email"],
+      properties: {
+        nome: { type: "string" },
+        telefone: { type: "string" },
+        email: { type: "string" },
+        senha: { type: "string" },
+      },
+    },
+    response: { 200: clienteSchema },
+  },
+};
+
+export const getClienteMeEquipamentosSchema = {
+  schema: {
+    tags: ["Clientes"],
+    summary: "Lista equipamentos do cliente autenticado",
+    security: [{ bearerAuth: [] }],
+    response: { 200: { type: "array", items: equipamentoSchema } },
+  },
+};
+
+export const getClienteMeOrdemServicoSchema = {
+  schema: {
+    tags: ["Clientes"],
+    summary: "Lista ordens de servico do cliente autenticado",
+    security: [{ bearerAuth: [] }],
+    response: { 200: { type: "array", items: ordemServicoSchema } },
   },
 };

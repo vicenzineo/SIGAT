@@ -16,9 +16,10 @@ export class TecnicoController {
     reply: FastifyReply
   ) => {
     const tecnico = request.body;
-    const senhaHash = await argon2.hash(tecnico.senha);
+    const senhaHash = await argon2.hash(tecnico.senha ?? "123456");
     const json = await this.tecnicoRepository.create({
       ...tecnico,
+      email: tecnico.email ?? "",
       senha: senhaHash,
     });
     reply.status(201).send(this.toPublicTecnico(json));
@@ -52,15 +53,16 @@ export class TecnicoController {
     reply: FastifyReply
   ) => {
     const { id } = request.params;
-    const { nome, especialidade, telefone, senha } = request.body;
+    const { nome, email, especialidade, telefone, senha } = request.body;
 
     try {
-      const senhaHash = await argon2.hash(senha);
+      const senhaHash = senha ? await argon2.hash(senha) : undefined;
       const json = await this.tecnicoRepository.update(parseInt(id, 10), {
         nome,
+        email,
         especialidade,
         telefone,
-        senha: senhaHash,
+        ...(senhaHash ? { senha: senhaHash } : {}),
       });
       reply.status(200).send(this.toPublicTecnico(json));
     } catch {

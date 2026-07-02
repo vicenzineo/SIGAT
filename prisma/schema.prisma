@@ -31,7 +31,7 @@ model Equipamento {
   defeitoRelatado String
 
   clienteId Int
-  cliente Cliente @relation(fields: [clienteId], references: [idCliente])
+  cliente Cliente @relation(fields: [clienteId], references: [idCliente], onDelete: Cascade)
 
   ordensServico OrdemServico[]
 }
@@ -43,14 +43,14 @@ model OrdemServico {
   valorServico Float
 
   equipamentoId Int
-  equipamento Equipamento @relation(fields: [equipamentoId], references: [idEquipamento])
+  equipamento Equipamento @relation(fields: [equipamentoId], references: [idEquipamento], onDelete: Cascade)
 
   pagamento Pagamento?
 
   notificacoes Notificacao[]
 
   tecnicoId Int
-  tecnico Tecnico @relation(fields: [tecnicoId], references: [idTecnico])
+  tecnico Tecnico @relation(fields: [tecnicoId], references: [idTecnico], onDelete: Cascade)
 
   servicos Servico[]
 
@@ -67,7 +67,7 @@ model Pagamento {
   status String
 
   ordemServicoId Int @unique
-  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS], onDelete: Cascade)
 }
 
 model Notificacao {
@@ -77,12 +77,13 @@ model Notificacao {
   tipo String
 
   ordemServicoId Int
-  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS], onDelete: Cascade)
 }
 
 model Tecnico {
   idTecnico Int @id @default(autoincrement())
   nome String
+  email String @default("")
   especialidade String
   telefone String
   senha String @default("")
@@ -96,7 +97,7 @@ model Servico {
   valorBase Int
 
   ordemServicoId Int
-  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS], onDelete: Cascade)
 }
 
 model Diagnostico {
@@ -105,7 +106,7 @@ model Diagnostico {
   dataRegistro DateTime
 
   ordemServicoId Int
-  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS], onDelete: Cascade)
 }
 
 model ItemPecoOS {
@@ -113,10 +114,10 @@ model ItemPecoOS {
   quantidade Int
 
   ordemServicoId Int
-  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS])
+  ordemServico OrdemServico @relation(fields: [ordemServicoId], references: [idOS], onDelete: Cascade)
 
   pecaId Int
-  peca Peca @relation(fields: [pecaId], references: [idPeca])
+  peca Peca @relation(fields: [pecaId], references: [idPeca], onDelete: Cascade)
 }
 
 model Peca {

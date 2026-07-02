@@ -2,7 +2,7 @@ export const ordemServicoSchema = {
   type: "object",
   properties: {
     idOS: { type: "integer" },
-    dataAbertura: { type: "string", format: "date-time" },
+    dataAbertura: { type: "string" },
     status: { type: "string" },
     valorServico: { type: "number" },
     equipamentoId: { type: "integer" },
@@ -20,7 +20,7 @@ export const ordemServicoBodySchema = {
     "tecnicoId",
   ],
   properties: {
-    dataAbertura: { type: "string", format: "date-time" },
+    dataAbertura: { type: "string" },
     status: { type: "string" },
     valorServico: { type: "number" },
     equipamentoId: { type: "integer" },

@@ -1,8 +1,8 @@
 const loginBodySchema = {
   type: "object",
-  required: ["nome", "senha"],
+  required: ["email", "senha"],
   properties: {
-    nome: { type: "string" },
+    email: { type: "string" },
     senha: { type: "string" },
   },
 } as const;
@@ -36,7 +36,7 @@ const loginResponse = {
 export const postAuthLoginTecnicoSchema = {
   schema: {
     tags: ["Auth"],
-    summary: "Gera token JWT para tecnico por nome e senha",
+    summary: "Gera token JWT para tecnico por email e senha",
     body: loginBodySchema,
     response: loginResponse,
     security: [],

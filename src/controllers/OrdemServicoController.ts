@@ -5,12 +5,29 @@ import { OrdemServicoRepository } from "../repositories/OrdemServicoRepository.j
 export class OrdemServicoController {
   private ordemServicoRepository = new OrdemServicoRepository();
 
+  private normalizeOrdemServicoPayload(payload: Partial<Omit<OrdemServico, "idOS">>) {
+    const dataAbertura = payload.dataAbertura;
+    const parsedDate = typeof dataAbertura === 'string' && dataAbertura.length > 0
+      ? new Date(dataAbertura)
+      : dataAbertura;
+
+    return {
+      ...payload,
+      ...(payload.equipamentoId !== undefined ? { equipamentoId: Number(payload.equipamentoId) } : {}),
+      ...(payload.tecnicoId !== undefined ? { tecnicoId: Number(payload.tecnicoId) } : {}),
+      ...(payload.valorServico !== undefined ? { valorServico: Number(payload.valorServico) } : {}),
+      ...(parsedDate instanceof Date && !Number.isNaN(parsedDate.getTime()) ? { dataAbertura: parsedDate } : {}),
+    };
+  }
+
   post = async (
     request: FastifyRequest<{ Body: Omit<OrdemServico, "idOS"> }>,
     reply: FastifyReply
   ) => {
-    const ordemServico = request.body;
-    const json = await this.ordemServicoRepository.create(ordemServico);
+    const ordemServico = this.normalizeOrdemServicoPayload(request.body);
+    const json = await this.ordemServicoRepository.create({
+      ...(ordemServico as Omit<OrdemServico, "idOS">),
+    });
     reply.status(201).send(json);
   };
 
@@ -47,11 +64,13 @@ export class OrdemServicoController {
 
     try {
       const json = await this.ordemServicoRepository.update(parseInt(id, 10), {
-        dataAbertura,
-        status,
-        valorServico,
-        equipamentoId,
-        tecnicoId,
+        ...this.normalizeOrdemServicoPayload({
+          dataAbertura,
+          status,
+          valorServico,
+          equipamentoId,
+          tecnicoId,
+        }),
       });
       reply.status(200).send(json);
     } catch {

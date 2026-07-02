@@ -3,7 +3,7 @@ import argon2 from "argon2";
 import { AuthRepository } from "../repositories/AuthRepository.js";
 
 type LoginBody = {
-  nome: string;
+  email: string;
   senha: string;
 };
 
@@ -15,14 +15,26 @@ type LoginClienteBody = {
 export class AuthController {
   private authRepository = new AuthRepository();
 
+  private async isPasswordValid(storedPassword: string, providedPassword: string) {
+    if (!storedPassword) {
+      return false;
+    }
+
+    if (storedPassword.startsWith("$argon2")) {
+      return argon2.verify(storedPassword, providedPassword);
+    }
+
+    return storedPassword === providedPassword;
+  }
+
   loginTecnico = async (
     request: FastifyRequest<{ Body: LoginBody }>,
     reply: FastifyReply
   ) => {
-    const { nome, senha } = request.body;
-    const tecnico = await this.authRepository.findTecnicoByNome(nome);
+    const { email, senha } = request.body;
+    const tecnico = await this.authRepository.findTecnicoByEmail(email);
 
-    if (!tecnico || !(await argon2.verify(tecnico.senha, senha))) {
+    if (!tecnico || !(await this.isPasswordValid(tecnico.senha, senha))) {
       reply.status(401).send({ message: "Credenciais invalidas" });
       return;
     }
@@ -30,6 +42,7 @@ export class AuthController {
     const token = await reply.jwtSign({
       idTecnico: tecnico.idTecnico,
       nome: tecnico.nome,
+      tipo: "tecnico",
     });
 
     reply.status(200).send({ token });
@@ -42,7 +55,7 @@ export class AuthController {
     const { email, senha } = request.body;
     const cliente = await this.authRepository.findClienteByEmail(email);
 
-    if (!cliente || !(await argon2.verify(cliente.senha, senha))) {
+    if (!cliente || !(await this.isPasswordValid(cliente.senha, senha))) {
       reply.status(401).send({ message: "Credenciais invalidas" });
       return;
     }

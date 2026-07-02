@@ -3,8 +3,12 @@ import { clienteController } from "../controllers/ClienteController.js";
 import {
   deleteClienteByIdSchema,
   getClienteByIdSchema,
+  getClienteMeEquipamentosSchema,
+  getClienteMeOrdemServicoSchema,
+  getClienteMeSchema,
   getClienteSchema,
   postClienteSchema,
+  putClienteMeSchema,
   putClienteByIdSchema,
 } from "../schemas/cliente.schema.js";
 
@@ -19,4 +23,11 @@ async function clientesProtectedRoutes(fastify: FastifyInstance) {
   fastify.delete("/:id", deleteClienteByIdSchema, clienteController.deleteParamId);
 }
 
-export { clientesPublicRoutes, clientesProtectedRoutes };
+async function clientesSelfRoutes(fastify: FastifyInstance) {
+  fastify.get("/me", getClienteMeSchema, clienteController.getMe);
+  fastify.put("/me", putClienteMeSchema, clienteController.putMe);
+  fastify.get("/me/equipamentos", getClienteMeEquipamentosSchema, clienteController.getMyEquipamentos);
+  fastify.get("/me/ordens-servico", getClienteMeOrdemServicoSchema, clienteController.getMyOrdensServico);
+}
+
+export { clientesPublicRoutes, clientesProtectedRoutes, clientesSelfRoutes };

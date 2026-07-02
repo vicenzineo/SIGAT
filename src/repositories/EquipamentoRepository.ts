@@ -6,6 +6,10 @@ export class EquipamentoRepository {
     return prisma.equipamento.findMany();
   }
 
+  public async findByClienteId(clienteId: number): Promise<Equipamento[]> {
+    return prisma.equipamento.findMany({ where: { clienteId } });
+  }
+
   public async findById(id: number): Promise<Equipamento | null> {
     return prisma.equipamento.findUnique({ where: { idEquipamento: id } });
   }

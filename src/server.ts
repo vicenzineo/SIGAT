@@ -4,8 +4,9 @@ import fastifyJwt from "@fastify/jwt";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import { authMiddleware } from "./middlewares/auth.middleware.js";
+import { requireRole } from "./middlewares/role.middleware.js";
 import authRoutes from "./routes/auth.route.js";
-import { clientesPublicRoutes, clientesProtectedRoutes } from "./routes/cliente.route.js";
+import { clientesPublicRoutes, clientesProtectedRoutes, clientesSelfRoutes } from "./routes/cliente.route.js";
 import { tecnicosPublicRoutes, tecnicosProtectedRoutes } from "./routes/tecnico.route.js";
 import equipamentosRoutes from "./routes/equipamento.route.js";
 import servicosRoutes from "./routes/servico.route.js";
@@ -67,16 +68,26 @@ fastify.register(tecnicosPublicRoutes, { prefix: "/tecnicos" });
 await fastify.register(async function protectedRoutes(protectedFastify) {
     protectedFastify.addHook("preHandler", authMiddleware);
 
-    protectedFastify.register(clientesProtectedRoutes, { prefix: "/clientes" });
-    protectedFastify.register(tecnicosProtectedRoutes, { prefix: "/tecnicos" });
-    protectedFastify.register(equipamentosRoutes, { prefix: "/equipamentos" });
-    protectedFastify.register(servicosRoutes, { prefix: "/servicos" });
-    protectedFastify.register(pecasRoutes, { prefix: "/pecas" });
-    protectedFastify.register(ordensServicoRoutes, { prefix: "/ordens-servico" });
-    protectedFastify.register(pagamentosRoutes, { prefix: "/pagamentos" });
-    protectedFastify.register(notificacoesRoutes, { prefix: "/notificacoes" });
-    protectedFastify.register(diagnosticosRoutes, { prefix: "/diagnosticos" });
-    protectedFastify.register(itensPecoOSRoutes, { prefix: "/itens-peca-os" });
+    await protectedFastify.register(async function tecnicoRoutes(tecnicoFastify) {
+        tecnicoFastify.addHook("preHandler", requireRole("tecnico"));
+
+        tecnicoFastify.register(clientesProtectedRoutes, { prefix: "/clientes" });
+        tecnicoFastify.register(tecnicosProtectedRoutes, { prefix: "/tecnicos" });
+        tecnicoFastify.register(equipamentosRoutes, { prefix: "/equipamentos" });
+        tecnicoFastify.register(servicosRoutes, { prefix: "/servicos" });
+        tecnicoFastify.register(pecasRoutes, { prefix: "/pecas" });
+        tecnicoFastify.register(ordensServicoRoutes, { prefix: "/ordens-servico" });
+        tecnicoFastify.register(pagamentosRoutes, { prefix: "/pagamentos" });
+        tecnicoFastify.register(notificacoesRoutes, { prefix: "/notificacoes" });
+        tecnicoFastify.register(diagnosticosRoutes, { prefix: "/diagnosticos" });
+        tecnicoFastify.register(itensPecoOSRoutes, { prefix: "/itens-peca-os" });
+    });
+
+    await protectedFastify.register(async function clienteRoutes(clienteFastify) {
+        clienteFastify.addHook("preHandler", requireRole("cliente"));
+
+        clienteFastify.register(clientesSelfRoutes, { prefix: "/clientes" });
+    });
 });
 
 const start = async () => {

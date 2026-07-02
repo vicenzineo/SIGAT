@@ -5,4 +5,3 @@ dist/
 *.js
 volumes
 /generated/prisma
-.env
