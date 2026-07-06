@@ -7,7 +7,7 @@ export class OrdemServicoController {
 
   private normalizeOrdemServicoPayload(payload: Partial<Omit<OrdemServico, "idOS">>) {
     const dataAbertura = payload.dataAbertura;
-    const parsedDate = typeof dataAbertura === 'string' && dataAbertura.length > 0
+    const parsedDate = typeof dataAbertura === 'string' && (dataAbertura as string).length > 0
       ? new Date(dataAbertura)
       : dataAbertura;
 

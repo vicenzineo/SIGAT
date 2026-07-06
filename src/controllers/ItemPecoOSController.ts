@@ -1,6 +1,11 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { ItemPecoOS } from "../../generated/prisma/client.js";
-import { ItemPecoOSRepository } from "../repositories/ItemPecoOSRepository.js";
+import {
+  InsufficientStockError,
+  ItemPecoOSNotFoundError,
+  ItemPecoOSRepository,
+  PecaNotFoundError,
+} from "../repositories/ItemPecoOSRepository.js";
 
 export class ItemPecoOSController {
   private itemPecoOSRepository = new ItemPecoOSRepository();
@@ -10,8 +15,25 @@ export class ItemPecoOSController {
     reply: FastifyReply
   ) => {
     const itemPecoOS = request.body;
-    const json = await this.itemPecoOSRepository.create(itemPecoOS);
-    reply.status(201).send(json);
+    try {
+      const json = await this.itemPecoOSRepository.create(itemPecoOS);
+      reply.status(201).send(json);
+    } catch (error) {
+      if (error instanceof PecaNotFoundError) {
+        reply.status(404).send({ message: "Peca not found" });
+        return;
+      }
+
+      if (error instanceof InsufficientStockError) {
+        reply.status(400).send({
+          message: `Estoque insuficiente. Disponivel: ${error.available}, solicitado: ${error.requested}`,
+        });
+        return;
+      }
+
+      request.log.error(error, "Erro ao criar item de peca na OS");
+      reply.status(500).send({ message: "Erro ao criar item de peca na OS" });
+    }
   };
 
   get = async (_request: FastifyRequest, reply: FastifyReply) => {
@@ -51,8 +73,27 @@ export class ItemPecoOSController {
         pecaId,
       });
       reply.status(200).send(json);
-    } catch {
-      reply.status(404).send({ message: "Item de peca OS not found" });
+    } catch (error) {
+      if (error instanceof ItemPecoOSNotFoundError) {
+        reply.status(404).send({ message: "Item de peca OS not found" });
+        return;
+      }
+
+      if (error instanceof PecaNotFoundError) {
+        reply.status(404).send({ message: "Peca not found" });
+        return;
+      }
+
+      if (error instanceof InsufficientStockError) {
+        reply.status(400).send({
+          message: `Estoque insuficiente. Disponivel: ${error.available}, solicitado: ${error.requested}`,
+        });
+        return;
+      }
+
+      request.log.error(error, "Erro ao atualizar item de peca na OS");
+      reply.status(500).send({ message: "Erro ao atualizar item de peca na OS" });
+      return;
     }
   };
 
@@ -65,8 +106,19 @@ export class ItemPecoOSController {
     try {
       const json = await this.itemPecoOSRepository.delete(parseInt(id, 10));
       reply.status(200).send(json);
-    } catch {
-      reply.status(404).send({ message: "Item de peca OS not found" });
+    } catch (error) {
+      if (error instanceof ItemPecoOSNotFoundError) {
+        reply.status(404).send({ message: "Item de peca OS not found" });
+        return;
+      }
+
+      if (error instanceof PecaNotFoundError) {
+        reply.status(404).send({ message: "Peca not found" });
+        return;
+      }
+
+      request.log.error(error, "Erro ao excluir item de peca na OS");
+      reply.status(500).send({ message: "Erro ao excluir item de peca na OS" });
     }
   };
 }
